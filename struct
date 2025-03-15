@@ -1,0 +1,137 @@
+#include <iostream>
+#include <math.h>
+#include <iomanip>
+using namespace std;
+struct student{
+    char name[10][10] = {"Hall","Pun","Bank","Keen","P","Seng","Art","Fiw","March","A.Warin"};
+    int score[10];
+};
+int findmax(int datascore[],int size){
+    int Max = datascore[0],k;
+    for(k=0;k<size;k++){
+        if(datascore[k] > Max) Max = datascore[k];
+        else continue;
+    }
+    return Max;
+}
+int findmin(int datascore[],int size){
+    int Min = datascore[0],k;
+    for(k=0;k<size;k++){
+        if(datascore[k] < Min) Min = datascore[k];
+        else continue;
+    }
+    return Min;
+}
+float findavr(int datascore[],int size){
+    float avr,sum = 0;
+    int k;
+    for(k=0;k<size;k++){
+        sum += datascore[k];
+    }
+    avr = sum/size;
+    return avr;
+}
+int findmode(int datascore[],int size){
+    int mode,cnt = 0;
+    int i,j,sum;
+    for(i=0;i<size;i++){
+        sum = 0;
+        for(j=i;j<size;j++){
+            if(datascore[i] == datascore[j]){
+                sum++;
+            }
+        }
+        if(sum > cnt){
+            cnt = sum;
+            mode = datascore[i];
+        }
+    }
+    if(cnt <= 1){
+        mode = 0;
+    }
+    return mode;
+}
+float findmedian(int datascore[], int size) {
+    int j, i, l;
+    for (i = 0; i < size; i++) {
+        for (j = i + 1; j < size; j++) {
+            if (datascore[i] > datascore[j]) {
+                l = datascore[i];
+                datascore[i] = datascore[j];
+                datascore[j] = l;
+            }
+        }
+    }
+    if (size % 2 == 0) {
+        int half1 = size / 2 - 1;
+        int half2 = size / 2 ;
+        float median = (datascore[half1] + datascore[half2]) / 2;
+        return median;
+    }
+    else {
+        int half1 = size / 2;
+        float median1 = datascore[half1];
+        return median1;
+    }
+}
+float findsd(int datascore[],int size,float avr){
+    float sd,sum = 0;
+    int i;
+    for(i=0;i<size;i++){
+        sum += pow((datascore[i] - avr),2);
+    }
+    sd = sqrt(sum/(size - 1));
+    return sd;
+}
+
+int main(){
+    int i,j,copyscore[10],max1;
+    char grade[10];
+    student stu;
+    srand(time(0));
+    for(i=0;i<10;i++){
+        stu.score[i] = rand() % 101;
+        copyscore[i] = stu.score[i];
+    }
+    int maxscore = findmax(copyscore,10);
+    int minscore = findmin(copyscore,10);
+    float avrscore = findavr(copyscore,10);
+    int modescore = findmode(copyscore,10);
+    float medianscore = findmedian(copyscore,10);
+    float sdscore = findsd(copyscore,10,avrscore);
+    float A = avrscore+(2*sdscore);
+    float B = avrscore + sdscore;
+    float C = avrscore;
+    float D = avrscore - sdscore;
+    for(i=0;i<10;i++){
+        if(stu.score[i] > A){
+            grade[i] = 'A';
+        }
+        else if(stu.score[i] >= B){
+            grade[i] = 'B';
+        }
+        else if(stu.score[i] >= C){
+            grade[i] = 'C';
+        }
+        else if(stu.score[i] >= D){
+            grade[i] = 'D';
+        }
+        else{ 
+            grade[i] = 'F';
+        }
+    }
+
+    cout << "Student    Score  Grade" << endl;
+    for(i = 0; i < 10; i++) {
+        cout << left << setw(10) << stu.name[i]  << right << setw(6) << stu.score[i]  << "    " << grade[i] << endl;  
+    }
+    cout << endl;
+    
+    cout << "MaxStudent : "<< maxscore << endl;
+    cout << "MinStudent : "<< minscore << endl;
+    cout << "AvrStudent : "<< avrscore <<endl;
+    if(modescore == 0){cout << "ModeStudent : Don't have modescore" << endl;}
+    else{cout << "ModeStudent : "<< modescore <<endl;}
+    cout << "MedianStudent : "<< medianscore <<endl;
+    cout << "SdStudent : "<< sdscore <<endl;
+}
